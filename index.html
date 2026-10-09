@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTU-VISTA SLMT WebMap</title>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+
+<div id="container">
+    <div id="map"></div>
+    <div id="sidebar">
+        <button id="sidebarHide">◀</button>
+        <div id="sidebarContent">
+            <div id="infoSidebar"></div>
+            <div id="mixerSidebar" hidden>
+                <div id="mixerHeader">
+                    <h3>Mixer Settings</h3>
+                    <label> Default Volume: <span id="volumeValue">100%</span> <input id="globalVolume" type="range" min="0" max="1" step="0.01" value="1" /></label>
+                    <label> (Passive Mode) Audible Radius: <span id="radiusValue">500 m</span> <input id="globalRadius" type="range" min="100" max="20000" step="50" value="500" /></label>
+                    <label> Autoplay new tracks <input id="globalAutoplay" type="checkbox"/></label>
+                    <label><button id="mixerModeButton"> Switch to passive </button></label>
+                    <label><button id="clearTracksButton"> Clear Selected Tracks </button></label>
+                </div>
+                <div id="mixerContent">
+                    <h3>Active Tracks</h3>
+                </div>
+            </div>
+            <div id="formSidebar" hidden>
+                <h2>Submit Marker</h2>
+                <label>Click somewhere on the map to select the coordinates for this submission.</label>
+                <label>Latitude: </label><span id="formLatitude"></span>
+                <label>Longitude: </label><span id="formLongitude"></span>
+                <label>Title </label><input type="text">
+                <label>Description </label><textarea rows="4"></textarea>
+                <label>Source URL </label><input type="url">
+                <label>Image File </label><input type="file" accept=".png,.jpg">
+                <label>Audio File </label><input type="file" accept=".wav">
+                <button> Submit Marker for review </button>
+            </div>
+            <div id="searchSidebar" hidden>
+                <h2>Search for marker</h2>
+                <div id="searchFilters"></div>
+                <div>
+                    <button id="addFilterButton">Add filter</button>
+                    <button id="applyFilterButton">Apply filters</button>
+                </div>
+                <h4>Results</h4>
+                <div id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+    <div id="cornerButtons">
+        <button id="mixerButton" data-tooltip="Toggle between Information and Mixer modes">🎧</button>
+        <button id="formButton" data-tooltip="Add a new marker at the clicked position">📍➕</button>
+        <button id="searchButton" data-tooltip="Open search and filter function">🔍<div id="filteredViewInfo" style="display: none;">(Filtered view)</div></button>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="/src/main.ts"></script>
+
+
+</body>
+</html>
