@@ -5,6 +5,8 @@ export interface MarkerData {
     latitude: number;
     longitude: number;
     audioRadius: number;
+    latitude_override?:number,
+    longitude_override?:number,
     type?:string;
     image?: string;
     audio?: string;

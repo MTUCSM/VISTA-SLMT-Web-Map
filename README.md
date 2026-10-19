@@ -14,12 +14,12 @@ A browser page refresh might be necessary to reflect the changes.
 - Display marker title on hover
 
 ## TODO
-- Guided tours (have premade filters for a handful of hand-picked markers)
 - Explore hosting options (static page on github + external storage server, all on a mtu-hosted server)
-- Any number of each file type per marker (+integration in Info, Mixing, and Form modes)
-- Fully customisable description (could even imagine ordering the files inside it in order to have description block > image > block > sound file > block)
+- Rich text (markdown?) allowing any number of each file type per marker
+- Integration of multiple files in Info, Mixing, and Form modes
 - Video integration: closing sidebar also pauses any video playing in it
-- Decide naming convention for titles
+- Marker icons according to type/action
+- Integrate Bandcamp/soundcloud
 
 ## Mixing
 - Button bottom left of map opens sidebar with mixing mode, active by default, but has a toggle at top of sidebar to swap between active vs passive
@@ -34,7 +34,7 @@ Clicking a marker adds it to the sidebar where it can be removed or played/pause
 
 TODO:
 - Integration for multiple audio files in a single marker (menu when clicking/hovering marker?)
-- Can add all markers of a certain tag to list
+- Can add all markers from a search to list
 
 ### Active
 Volume of active tracks is manually controlled through native audio interface.
@@ -64,3 +64,6 @@ Each marker provides a button to center on the map and open the marker details.
 (future) Each marker with an audio track also provides an option to add to the mixer.
 Applying the search also changes which markers are displayed on the map, and displays "Filtered view" along with the search button.
 
+TODO:
+- Leave filtered view
+- Guided tours (have premade filters for a handful of hand-picked markers)

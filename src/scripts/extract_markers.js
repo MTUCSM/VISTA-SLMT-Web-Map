@@ -36,39 +36,22 @@ export function buildMarkers(){
             return
         }
         try {
-            var coordinates_string = row.coordinates
-            var lat,lon
-            if (coordinates_string.includes("N")){
-                // format 52°18'45.1"N 9°16'17.9"W
-                var s = coordinates_string.split(" ")
-                var lat_string = s[0]
-                var lon_string = s[1]
-                s = lat_string.split("°")
-                lat = Number(s[0]) // 52
-                s = s[1].split("'")
-                lat += Number(s[0])/100 // 18
-                s = s[1].split('"')
-                lat += Number(s[0])/10000 // 45.1
-                lat *= s[1]=="S"?-1:1 // negative if south
+            var coordinates = parseCoordinates(row.index,row.coordinates)
+            if (coordinates.length==0) return
 
-                s = lon_string.split("°")
-                lon = Number(s[0]) // 9
-                s = s[1].split("'")
-                lon += Number(s[0])/100 // 16
-                s = s[1].split('"')
-                lon += Number(s[0])/10000 // 17.9
-                lon *= s[1]=="W"?-1:1 // negative if west
-            }
-            else if (coordinates_string && coordinates_string.includes(",")){
-                // 52.06107950209387, -9.49281117547677
-                var s = coordinates_string.split(",")
-                lat = Number(s[0])
-                lon = Number(s[1])
-            }
-            else {
-                // unknown format, skip
-                console.log(`Row ${index} unknown format: ${row.coordinates}`)
-                return
+            var olat,olon
+            if (row.override){
+                if (row.override=="REMOVE"){ // remove the marker in XR version
+                    olat = 0
+                    olon = 0
+                }
+                else {
+                    var ocoordinates = parseCoordinates(row.index,row.override) // move the marker in XR version
+                    if (ocoordinates.length==2){
+                        olat = ocoordinates[0]
+                        olon = ocoordinates[1]
+                    }
+                }
             }
 
             if (row.image){ // only accept .png or .jpg
@@ -80,7 +63,7 @@ export function buildMarkers(){
             }
             if (row.audio){ // only accept .wav
                 row.audio = row.audio.trim()
-                if (!row.audio.endsWith(".wav")){
+                if (!row.audio.toLowerCase().endsWith(".wav")){
                     console.log(`Row ${index} invalid audio format: ${row.audio}`)
                     row.audio = undefined
                 }
@@ -92,9 +75,11 @@ export function buildMarkers(){
                 // title: string,
                 title:row.title,
                 // latitude: number,
-                latitude:lat,
+                latitude:coordinates[0],
                 // longitude: number,
-                longitude:lon,
+                longitude:coordinates[1],
+                latitude_override:olat,
+                longitude_override:olon,
                 // audioRadius:number
                 audioRadius:500,
                 // type?:string;
@@ -139,6 +124,44 @@ export function buildMarkers(){
     console.log(
         `Generated ${markers.length} markers`
     );
+
+    function parseCoordinates(index,coordinates_string){
+        var lat,lon
+        if (coordinates_string.includes("N")){
+            // format 52°18'45.1"N 9°16'17.9"W
+            var s = coordinates_string.split(" ")
+            var lat_string = s[0]
+            var lon_string = s[1]
+            s = lat_string.split("°")
+            lat = Number(s[0]) // 52
+            s = s[1].split("'")
+            lat += Number(s[0])/100 // 18
+            s = s[1].split('"')
+            lat += Number(s[0])/10000 // 45.1
+            lat *= s[1]=="S"?-1:1 // negative if south
+
+            s = lon_string.split("°")
+            lon = Number(s[0]) // 9
+            s = s[1].split("'")
+            lon += Number(s[0])/100 // 16
+            s = s[1].split('"')
+            lon += Number(s[0])/10000 // 17.9
+            lon *= s[1]=="W"?-1:1 // negative if west
+            return [lat,lon]
+        }
+        else if (coordinates_string && coordinates_string.includes(",")){
+            // 52.06107950209387, -9.49281117547677
+            var s = coordinates_string.split(",")
+            lat = Number(s[0])
+            lon = Number(s[1])
+            return [lat,lon]
+        }
+        else {
+            // unknown format, skip
+            console.log(`Row ${index} unknown format: ${coordinates_string}`)
+            return []
+        }
+    }
 }
 
 // returns true if file is readable, false otherwise
