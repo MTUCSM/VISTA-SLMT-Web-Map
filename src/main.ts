@@ -25,7 +25,7 @@ async function init() {
     // map.addLayer(markerCluster);
 
     // setup markers
-    const response = await fetch("/markers.json")
+    const response = await fetch("markers.json")
     if (!response.ok)
         throw new Error(response.statusText)
     const jsonMarkers:MarkerData[] = await response.json() as MarkerData[]
