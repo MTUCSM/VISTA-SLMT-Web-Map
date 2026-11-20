@@ -104,7 +104,13 @@ export function buildMarkers(){
                 year:row.year,
                 // location?:string;
                 location:row.location,
+                // smartdescription?:string;
+                smartdescription:row.smartdescription
             }
+            // if (row.location=="Kilcummin") {
+            //     console.log(row)
+            //     console.log(marker)
+            // }
             // check files
             if (marker.audio && !checkFile("public/audio/"+marker.audio)) console.log("%cCould not access audio file %s","color: red",marker.audio)
             if (marker.image && !checkFile("public/images/"+marker.image)) console.log("%cCould not access image file %s","color: red",marker.image)

@@ -1,8 +1,9 @@
-import L, { Marker } from "leaflet";
+import L from "leaflet";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { EnumeratedFields, IgnoredTypes, SearchFields, type ActiveTrack, type MarkerData, type MixerMode, type MixerSettings, type SidebarMode, type SidebarVisibility } from "./interfaces"
+import { marked } from "marked";
 
 async function init() {
     // setup map
@@ -66,10 +67,64 @@ async function init() {
             setSidebarInfo()
         }
     }
+    function escapeAttribute(str: string) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+    function displaySmartDescription(content:string){
+        // put placeholders on media content
+        const replacements: string[] = [];
+        content = content
+            .replace(
+                /\{\{audio src="([^"]+)"\}\}/g,
+                (_, src) => {replacements.push(
+                        `<audio controls><source src="audio/${escapeAttribute(src)}"></audio>`
+                    );
+                    return `{{MEDIA_${replacements.length - 1}}}`;
+                }
+            )
+            .replace(
+                /\{\{webimage src="([^"]+)"\}\}/g,
+                (_, src) => {replacements.push(
+                        `<img src="${escapeAttribute(src)}">`
+                    );
+                    return `{{MEDIA_${replacements.length - 1}}}`;
+                }
+            )
+            .replace(
+                /\{\{image src="([^"]+)"\}\}/g,
+                (_, src) => {replacements.push(
+                        `<img src="images/${escapeAttribute(src)}">`
+                    );
+                    return `{{MEDIA_${replacements.length - 1}}}`;
+                }
+            )
+            .replace(
+                /\{\{soundcloud src="([^"]+)"\}\}/g,
+                (_, src) => {replacements.push(
+                        `<iframe width="100%" height=166 scrolling="no" frameborder="no" allow="autoplay"
+                        src="https://w.soundcloud.com/player/?url=${escapeAttribute(src)}"></iframe>`
+                    );
+                    return `{{MEDIA_${replacements.length - 1}}}`;
+                }
+            )
+        // parse as markedown
+        var html = marked.parse(content, { async: false });
+        // bring back media content at placeholders
+        html = html.replace(
+            /{{MEDIA_(\d+)}}/g,
+            (_, i) => replacements[Number(i)]
+        );
+        return html
+    }
     function displayMarkerInfo(marker:MarkerData){
         const infoSidebar = document.getElementById("infoSidebar")
         if (!infoSidebar) return
-        infoSidebar.innerHTML = `
+        if (marker.smartdescription) infoSidebar.innerHTML = displaySmartDescription(marker.smartdescription)
+        else infoSidebar.innerHTML = `
             <h2>${marker.title}</h2>
             ${marker.image ? `<img src="images/${marker.image}">` : ""}
             ${marker.audio ? `<audio controls><source src="audio/${marker.audio}" type="audio/wav"></audio>` : ""}

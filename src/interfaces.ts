@@ -18,6 +18,7 @@ export interface MarkerData {
     musicians?:string;
     year?:string;
     location?:string;
+    smartdescription?:string;
 }
 export interface ActiveTrack {
     marker: MarkerData;
